@@ -1,7 +1,7 @@
 Matrix = list[list[str]]
 
 
-def rotate(matrix: Matrix, rows: int, cols: int) -> Matrix:
+def rotate(matrix: Matrix, cols: int) -> Matrix:
     rotated = []
     for i in range(cols):
         new_row = []
