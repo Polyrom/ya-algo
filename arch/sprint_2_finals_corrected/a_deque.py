@@ -94,20 +94,6 @@ def read_input() -> tuple[int, list[tuple[str, int | None]]]:
     return int(cap), ops
 
 
-# def run_deque(cap: int, ops: list[tuple[str, int | None]]) -> list:
-#     dq = Deque(cap)
-#     results = []
-#     for op in ops:
-#         method_arg = op[1]
-#         if method_arg is None:
-#             results.append(str(getattr(dq, op[0])()))
-#         else:
-#             res = getattr(dq, op[0])(op[1])
-#             if res is not None:
-#                results.append(str(res))
-#     return results
-
-
 if __name__ == "__main__":
     cap, ops = read_input()
     dq = Deque(cap)
