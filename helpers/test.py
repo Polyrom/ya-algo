@@ -1,15 +1,14 @@
-from typing import List
 from dataclasses import dataclass
 
 
-def get_closest_zero(arr: List[int]) -> List[int]:
-    pass
+def get_closest_zero(arr: list[int]) -> list[int]:
+    return arr
 
 
 @dataclass
 class TestData:
-    input: List[int]
-    want: List[int]
+    input: list[int]
+    want: list[int]
 
 
 def test() -> None:
