@@ -17,9 +17,6 @@ TEST = "TEST"
 MAX_LEN = 1000
 
 
-# 13 133 -> 13 133
-# 83 833 -> 833 83
-# 26 263 -> 26 263
 def sort_key(n: str) -> str:
     return n * MAX_LEN
 
