@@ -1,0 +1,16 @@
+# Show help message
+default:
+	@just --list
+
+# Build executable from single .c file by providing source file name
+build target:
+	@echo "🔨 Building {{target}}..."
+	@clang -Wall -Wextra -Werror -pedantic -std=c2x -o {{trim_end_match(target, '.c')}} {{target}}
+	@echo "✅ Built {{trim_end_match(target, '.c')}} successfully!"
+
+# Build and run single .c file by providing source file name
+run target:
+	@just build {{target}}
+	@echo "🚀 Running {{trim_end_match(target, '.c')}}..."
+	@./"{{trim_end_match(target, '.c')}}"
+
