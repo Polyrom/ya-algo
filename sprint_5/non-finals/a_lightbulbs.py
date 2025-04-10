@@ -14,7 +14,7 @@ if LOCAL:
 def solution(root) -> int:
     brightest = float("-inf")
     rights = []
-    while root or len(rights) > 0:
+    while root or rights:
         while root:
             brightest = max(root.value, brightest)
             rights.append(root.right)
