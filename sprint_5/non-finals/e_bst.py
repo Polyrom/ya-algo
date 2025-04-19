@@ -27,7 +27,6 @@ def solution(root) -> bool:
     return True
 
 
-
 def test():
     node1 = Node(1, None, None)
     node2 = Node(4, None, None)

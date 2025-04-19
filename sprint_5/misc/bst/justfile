@@ -14,3 +14,11 @@ run target:
 	@echo "🚀 Running {{trim_end_match(target, '.c')}}..."
 	@./"{{trim_end_match(target, '.c')}}"
 
+# Build test files
+build-tests:
+	clang++ -std=c++14 -I. -Itests -I/usr/local/include bst.c tests/test_bst.c tests/test_main.c -o tests/bst_test -L/usr/local/lib -lgtest -lgtest_main -lpthread
+
+# Run tests
+test: build-tests
+    ./tests/bst_test
+
