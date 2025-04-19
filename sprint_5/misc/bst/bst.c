@@ -1,19 +1,15 @@
-#include <assert.h>
-#include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "bst.h"
 
-BTNode *create_node(int32_t value) {
+BTNode *bst_create_node(int32_t value) {
   BTNode *node = (BTNode *)malloc(sizeof(BTNode));
   node->value = value;
   return node;
 }
 
-BTNode *create_bst_from_array(int32_t *array, int32_t len) {
+BTNode *bst_create_from_array(int32_t *array, int32_t len) {
   BTNode *root = NULL;
   for (int i = 0; i < len; i++) {
     root = bst_push(root, array[i]);
@@ -21,14 +17,23 @@ BTNode *create_bst_from_array(int32_t *array, int32_t len) {
   return root;
 }
 
-void free_tree(BTNode *root) {
+void bst_destroy(BTNode *root) {
   if (root->left) {
-    free_tree(root->left);
+    bst_destroy(root->left);
   }
   if (root->right) {
-    free_tree(root->right);
+    bst_destroy(root->right);
   }
   free(root);
+}
+
+int is_bst(BTNode *node, int min, int max) {
+  if (node == NULL)
+    return 1;
+  if (node->value < min || node->value > max)
+    return 0;
+  return is_bst(node->left, min, node->value - 1) &&
+         is_bst(node->right, node->value + 1, max);
 }
 
 BTNode *bst_find(BTNode *root, int32_t value) {
@@ -64,7 +69,7 @@ int bst_find_node_with_parent(BTNode *root, BTNode **found,
 
 BTNode *bst_push(BTNode *root, int32_t value) {
   if (root == NULL) {
-    BTNode *node = create_node(value);
+    BTNode *node = bst_create_node(value);
     return node;
   }
   if (value < root->value) {

@@ -14,11 +14,18 @@ run target:
 	@echo "🚀 Running {{trim_end_match(target, '.c')}}..."
 	@./"{{trim_end_match(target, '.c')}}"
 
-# Build test files
+# Build test files for BST lib
 build-tests:
-	clang++ -std=c++14 -I. -Itests -I/usr/local/include bst.c tests/test_bst.c tests/test_main.c -o tests/bst_test -L/usr/local/lib -lgtest -lgtest_main -lpthread
+	@echo "🔨 Building tests..."
+	@clang++ -std=c++17 -I. -Itests -I/usr/local/include bst.c tests/test_bst.cpp tests/test_main.cpp -o tests/bst_test -L/usr/local/lib -lgtest -lgtest_main -lpthread
 
-# Run tests
+# Run tests for BST lib
 test: build-tests
-    ./tests/bst_test
+	@echo "🧪 Running tests..."
+	./tests/bst_test
 
+# Remove BST lib executables
+clean:
+	@echo "🧹🪣 Doing a cleanup..."
+	@rm -f bst tests/bst_test
+	@echo "✅ Cleanup complete!"
