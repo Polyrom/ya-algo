@@ -27,13 +27,13 @@ void bst_destroy(BTNode *root) {
   free(root);
 }
 
-int is_bst(BTNode *node, int min, int max) {
-  if (node == NULL)
+int is_bst(BTNode *root, int min, int max) {
+  if (root == NULL)
     return 1;
-  if (node->value < min || node->value > max)
+  if (root->value < min || root->value > max)
     return 0;
-  return is_bst(node->left, min, node->value - 1) &&
-         is_bst(node->right, node->value + 1, max);
+  return is_bst(root->left, min, root->value - 1) &&
+         is_bst(root->right, root->value + 1, max);
 }
 
 BTNode *bst_find(BTNode *root, int32_t value) {
