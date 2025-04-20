@@ -36,6 +36,28 @@ int is_bst(BTNode *root, int min, int max) {
          is_bst(root->right, root->value + 1, max);
 }
 
+int32_t is_bst_balanced_helper(BTNode *root, int32_t *height) {
+  if (root == NULL) {
+    *height = 0;
+    return 1;
+  }
+  int32_t left_height, right_height;
+  int32_t is_left_balanced = is_bst_balanced_helper(root->left, &left_height);
+  int32_t is_right_balanced = is_bst_balanced_helper(root->right, &right_height);
+
+  *height = 1 + (left_height > right_height ? left_height : right_height);
+  if (abs(left_height - right_height) > 1) {
+    return 0;
+  }
+
+  return is_left_balanced && is_right_balanced;
+}
+
+int is_bst_balanced(BTNode* root) {
+  int32_t height;
+  return is_bst_balanced_helper(root, &height);
+}
+
 BTNode *bst_find(BTNode *root, int32_t value) {
   if (root == NULL) {
     return NULL;

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../bst.h"
 
+#include "../bst.h"
 
 // Helper function to count nodes in BST
 int count_nodes(BTNode* root) {
@@ -19,12 +19,12 @@ TEST(BSTDeleteTest, DeleteNonExistentValue) {
     int values[] = {50, 30, 70};
     BTNode* root = bst_create_from_array(values, 3);
     BTNode* original_root = root;
-    
+
     root = bst_delete(root, 99);
     EXPECT_EQ(root, original_root);
     EXPECT_EQ(count_nodes(root), 3);
     EXPECT_TRUE(is_bst(root, INT_MIN, INT_MAX));
-    
+
     bst_destroy(root);
 }
 
@@ -48,7 +48,7 @@ TEST(BSTDeleteTest, DeleteNodeWithOneChild) {
     EXPECT_EQ(count_nodes(root), 7);
     EXPECT_TRUE(is_bst(root, INT_MIN, INT_MAX));
     EXPECT_EQ(bst_find(root, 20), nullptr);
-    BTNode * found = bst_find(root, 10);
+    BTNode* found = bst_find(root, 10);
     EXPECT_EQ(found->value, 10);
 
     bst_destroy(root);
@@ -63,7 +63,7 @@ TEST(BSTDeleteTest, DeleteNodeWithTwoChildren) {
     EXPECT_TRUE(is_bst(root, INT_MIN, INT_MAX));
     EXPECT_EQ(bst_find(root, 30), nullptr);
     // Verify the replacement node's value is now in the tree
-    BTNode * found = bst_find(root, 20);
+    BTNode* found = bst_find(root, 20);
     EXPECT_EQ(found->value, 20);
     found = bst_find(root, 40);
     EXPECT_EQ(found->value, 40);
@@ -95,4 +95,11 @@ TEST(BSTDeleteTest, DeleteAllNodes) {
     }
 
     EXPECT_EQ(root, nullptr);
+}
+
+TEST(BSTIsBalancedTest, BalancedTest) {
+    int values[] = {50, 30, 70, 20, 40, 60, 80};
+    BTNode* root = bst_create_from_array(values, 7);
+    EXPECT_TRUE(is_bst_balanced(root));
+    bst_destroy(root);
 }
