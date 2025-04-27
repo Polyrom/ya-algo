@@ -1,0 +1,8 @@
+# Show help message
+default:
+	@just --list
+
+# Run tests for heapsort
+test:
+	@echo "🧪 Running tests..."
+	@python -m unittest

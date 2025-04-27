@@ -26,7 +26,7 @@ def sift_down(heap, idx) -> int:
     if largest != idx:
         heap[idx], heap[largest] = heap[largest], heap[idx]
         return sift_down(heap, largest)
-    
+
     return idx
 
 
