@@ -1,4 +1,6 @@
 class MinHeap:
+    FIRST_ELEMENT_IDX = 1
+
     def __init__(self, values: list[int]) -> None:
         self.values: list[int | None] = [None]
         if len(values) > 0:
@@ -13,13 +15,13 @@ class MinHeap:
     def pop_min(self) -> int | None:
         if len(self.values) < 2:
             return None
-        result = self.values[1]
-        self.values[1] = self.values.pop()
-        self._sift_down(1)
+        result = self.values[self.FIRST_ELEMENT_IDX]
+        self.values[self.FIRST_ELEMENT_IDX] = self.values.pop()
+        self._sift_down(self.FIRST_ELEMENT_IDX)
         return result
 
     def _sift_up(self, key: int, index: int) -> None:
-        if index == 1:
+        if index == self.FIRST_ELEMENT_IDX:
             return
 
         parent_index = index // 2
@@ -34,15 +36,14 @@ class MinHeap:
 
         if left_index > max_index:
             return
-        if right_index <= max_index and (self.values[right_index] < self.values[left_index]): # type: ignore
+        if right_index <= max_index and (self.values[right_index] < self.values[left_index]):  # type: ignore
             max_index = right_index
         else:
             max_index = left_index
 
-        if self.values[max_index] < self.values[index]: # type: ignore
-            self.values[max_index], self.values[index] = self.values[index], self.values[max_index] 
+        if self.values[max_index] < self.values[index]:  # type: ignore
+            self.values[max_index], self.values[index] = self.values[index], self.values[max_index]
             self._sift_down(max_index)
-
 
 
 def test():
