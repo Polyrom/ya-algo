@@ -27,7 +27,7 @@ void bst_destroy(BTNode *root) {
   free(root);
 }
 
-int is_bst(BTNode *root, int min, int max) {
+int32_t is_bst(BTNode *root, int min, int max) {
   if (root == NULL)
     return 1;
   if (root->value < min || root->value > max)
@@ -36,7 +36,7 @@ int is_bst(BTNode *root, int min, int max) {
          is_bst(root->right, root->value + 1, max);
 }
 
-int32_t is_bst_balanced_helper(BTNode *root, int32_t *height) {
+static int32_t is_bst_balanced_helper(BTNode *root, int32_t *height) {
   if (root == NULL) {
     *height = 0;
     return 1;
@@ -53,7 +53,7 @@ int32_t is_bst_balanced_helper(BTNode *root, int32_t *height) {
   return is_left_balanced && is_right_balanced;
 }
 
-int is_bst_balanced(BTNode* root) {
+int32_t is_bst_balanced(BTNode* root) {
   int32_t height;
   return is_bst_balanced_helper(root, &height);
 }
@@ -71,7 +71,7 @@ BTNode *bst_find(BTNode *root, int32_t value) {
   return root;
 }
 
-int bst_find_node_with_parent(BTNode *root, BTNode **found,
+static int32_t bst_find_node_with_parent(BTNode *root, BTNode **found,
                               BTNode **found_parent, int value) {
   *found = root;
   *found_parent = NULL;
