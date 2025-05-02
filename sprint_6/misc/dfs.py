@@ -143,11 +143,6 @@ def test(test_graphs: list[tuple[str, Graph]]) -> None:
         path = graph.dfs_iter()
         print(f"PATH: {" -> ".join(map(str, path))}")
 
-def test_1(graph):
-    g = Graph(graph)
-    path = g.dfs_recur()
-    print(f"PATH: {path}")
-
 if __name__ == "__main__":
     directed_graph = {
         1: [3],
