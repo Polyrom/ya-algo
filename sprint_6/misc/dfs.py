@@ -78,6 +78,13 @@ class Graph:
         self._colors.set_value(vertex, GraphColors.BLACK)
         print(f"Vertex {vertex} colored black")
 
+    def get_adjacency_matrix(self) -> list[list[int]]:
+        matrix = [[0] * len(self.graph) for _ in range(len(self.graph))]
+        for from_, tos in self.graph.items():
+            for to in tos:
+                matrix[from_ - 1][to - 1] = 1
+        return matrix
+
     def dfs_recur(self) -> list[int]:
         self._path = []
 
@@ -123,23 +130,39 @@ class Graph:
         self._colors.reset()
         return path
 
+    def __repr__(self) -> str:
+        rows: list[str] = []
+        for vertex, neighbors in self.graph.items():
+            rows.append(f"{vertex} => {' '.join(map(str, neighbors))}")
+        return "\n".join(rows)
+
 
 def test(test_graphs: list[tuple[str, Graph]]) -> None:
     for name, graph in test_graphs:
         test_title = f"Running tests for {name}"
         single_prefix, single_postfix = "| ", " |"
         double_prefix, double_postfix = "|| ", " ||"
-        hor_equals_sep = "=" * (len(test_title) + len(double_prefix) + len(double_postfix))
+        equals_sep_title = "=" * (len(test_title) + len(double_prefix) + len(double_postfix))
         recursive_title = "RECURSIVE"
         iterative_title = "ITERATIVE"
+        adjacency_matrix_title = "ADJACENCY MATRIX"
+        graph_title = "ASSOCIATIVE LIST"
         dfs_title = " (DFS)"
-        hor_hyphen_sep = "—" * (len(recursive_title) + len(single_prefix) + len(single_postfix) + len(dfs_title))
+        dash_sep_adj_matrix = "—" * (len(adjacency_matrix_title) + len(single_prefix) + len(single_postfix))
+        dash_sep_assoc = "—" * (len(graph_title) + len(single_prefix) + len(single_postfix))
+        dash_sep_dfs_type = "—" * (len(recursive_title) + len(single_prefix) + len(single_postfix) + len(dfs_title))
 
-        print(f"\n{hor_equals_sep}\n{double_prefix}{test_title}{double_postfix}\n{hor_equals_sep}\n")
-        print(f"{hor_hyphen_sep}\n{single_prefix}{recursive_title}{dfs_title}{single_postfix}\n{hor_hyphen_sep}")
+        print(f"\n{equals_sep_title}\n{double_prefix}{test_title}{double_postfix}\n{equals_sep_title}\n")
+        print(f"{dash_sep_assoc}\n{single_prefix}{graph_title}{single_postfix}\n{dash_sep_assoc}")
+        print(graph)
+        print(f"{dash_sep_adj_matrix}\n{single_prefix}{adjacency_matrix_title}{single_postfix}\n{dash_sep_adj_matrix}")
+        adjacency_matrix = graph.get_adjacency_matrix()
+        for row in adjacency_matrix:
+            print(" ".join(map(str, row)))
+        print(f"{dash_sep_dfs_type}\n{single_prefix}{recursive_title}{dfs_title}{single_postfix}\n{dash_sep_dfs_type}")
         path = graph.dfs_recur()
         print(f"PATH: {' -> '.join(map(str, path))}")
-        print(f"{hor_hyphen_sep}\n{single_prefix}{iterative_title}{dfs_title}{single_postfix}\n{hor_hyphen_sep}")
+        print(f"{dash_sep_dfs_type}\n{single_prefix}{iterative_title}{dfs_title}{single_postfix}\n{dash_sep_dfs_type}")
         path = graph.dfs_iter()
         print(f"PATH: {' -> '.join(map(str, path))}")
 
