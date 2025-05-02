@@ -3,7 +3,7 @@ from typing import Self
 Color = int
 
 
-class Colors:
+class GraphColors:
     WHITE = 0
     GRAY = 1
     BLACK = 2
@@ -28,8 +28,13 @@ class Colors:
         if self.values.get(vertex) is not None:
             self.values[vertex] = color
 
+    def reset(self) -> None:
+        self.values = {}
+        self.keys = []
+        self.current = None
+
     def _build(self) -> None:
-        self.values = dict.fromkeys(range(1, len(self.graph) + 1), Colors.WHITE)
+        self.values = dict.fromkeys(range(1, len(self.graph) + 1), GraphColors.WHITE)
         if not self.is_empty():
             self.current = 0
         self.keys = list(self.values.keys())
@@ -48,52 +53,78 @@ class Colors:
         return f"Colors({str(self.values)})"
 
 
-def dfs_recur(graph: dict[int, list[int]]) -> None:
-    path = []
+class Graph:
+    def __init__(self, graph: dict[int, list[int]]) -> None:
+        self.graph = graph
+        self._colors: GraphColors | None = None
+        self._path = []
 
-    def dfs_recur_inner(graph: dict[int, list[int]], colors: Colors, vertex: int) -> None:
-        colors.set_value(vertex, Colors.GRAY)
+    def _init_colors(self) -> None:
+        self._colors = GraphColors(self.graph)
+
+    def _reset_colors(self) -> None:
+        if self._colors:
+            self._colors.reset()
+
+    def _dfs_recur_inner(self, vertex: int) -> None:
+        if not self._colors:
+            return
+        self._colors.set_value(vertex, GraphColors.GRAY)
         print(f"Vertex {vertex} colored gray")
-        path.append(vertex)
-        for neighbour in graph[vertex]:
-            if colors.is_white(neighbour):
-                dfs_recur_inner(graph, colors, neighbour)
-        colors.set_value(vertex, Colors.BLACK)
+        self._path.append(vertex)
+        for neighbour in self.graph[vertex]:
+            if self._colors.is_white(neighbour):
+                self._dfs_recur_inner(neighbour)
+        self._colors.set_value(vertex, GraphColors.BLACK)
         print(f"Vertex {vertex} colored black")
 
-    colors = Colors(graph)
-    for vertex in colors:
-        if colors.is_white(vertex):
-            dfs_recur_inner(graph, colors, vertex)
+    def dfs_recur(self) -> list[int]:
+        self._path = []
 
-    print(f"FORWARD PATH: {' '.join(map(str, path))}")
+        self._init_colors()
+        if not self._colors:
+            return []
 
+        for vertex in self._colors:
+            if self._colors.is_white(vertex):
+                self._dfs_recur_inner(vertex)
 
-def dfs_iter(graph: dict[int, list[int]]) -> None:
-    path = []
-
-    colors = Colors(graph)
-    for start_vertex in colors:
-        if colors.is_white(start_vertex):
-            stack = [start_vertex]
-            while stack:
-                vertex = stack.pop()
-                if colors.is_white(vertex):
-                    colors.set_value(vertex, Colors.GRAY)
-                    path.append(vertex)
-                    print(f"Vertex {vertex} colored gray")
-                    stack.append(vertex)
-                    for neighbor in graph[vertex]:
-                        if colors.is_white(neighbor):
-                            stack.append(neighbor)
-                elif colors.is_gray(vertex):
-                    colors.set_value(vertex, Colors.BLACK)
-                    print(f"Vertex {vertex} colored black")
-
-    print(f"FORWARD PATH: {' '.join(map(str, path))}")
+        path = self._path
+        self._path = []
+        self._reset_colors()
+        return path
 
 
-def test(test_graphs: list[tuple[str, dict[int, list[int]]]]) -> None:
+    def dfs_iter(self) -> list[int]:
+        self._path = []
+
+        self._init_colors()
+        if not self._colors:
+            return []
+
+        for start_vertex in self._colors:
+            if self._colors.is_white(start_vertex):
+                stack = [start_vertex]
+                while stack:
+                    vertex = stack.pop()
+                    if self._colors.is_white(vertex):
+                        self._colors.set_value(vertex, GraphColors.GRAY)
+                        self._path.append(vertex)
+                        print(f"Vertex {vertex} colored gray")
+                        stack.append(vertex)
+                        for neighbor in self.graph[vertex]:
+                            if self._colors.is_white(neighbor):
+                                stack.append(neighbor)
+                    elif self._colors.is_gray(vertex):
+                        self._colors.set_value(vertex, GraphColors.BLACK)
+                        print(f"Vertex {vertex} colored black")
+
+        path = self._path
+        self._path = []
+        self._colors.reset()
+        return path
+
+def test(test_graphs: list[tuple[str, Graph]]) -> None:
     for name, graph in test_graphs:
         test_title = f"Running tests for {name}"
         single_prefix, single_postfix = "| ", " |"
@@ -106,10 +137,16 @@ def test(test_graphs: list[tuple[str, dict[int, list[int]]]]) -> None:
 
         print(f"\n{hor_equals_sep}\n{double_prefix}{test_title}{double_postfix}\n{hor_equals_sep}\n")
         print(f"{hor_hyphen_sep}\n{single_prefix}{recursive_title}{dfs_title}{single_postfix}\n{hor_hyphen_sep}")
-        dfs_recur(graph)
+        path = graph.dfs_recur()
+        print(f"PATH: {" -> ".join(map(str, path))}")
         print(f"{hor_hyphen_sep}\n{single_prefix}{iterative_title}{dfs_title}{single_postfix}\n{hor_hyphen_sep}")
-        dfs_iter(graph)
+        path = graph.dfs_iter()
+        print(f"PATH: {" -> ".join(map(str, path))}")
 
+def test_1(graph):
+    g = Graph(graph)
+    path = g.dfs_recur()
+    print(f"PATH: {path}")
 
 if __name__ == "__main__":
     directed_graph = {
@@ -128,7 +165,7 @@ if __name__ == "__main__":
     }
     test(
         [
-            ("directed graph", directed_graph),
-            ("undirected graph", undirected_graph),
+            ("directed graph", Graph(directed_graph)),
+            ("undirected graph", Graph(undirected_graph)),
         ],
     )
