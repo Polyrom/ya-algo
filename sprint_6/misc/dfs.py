@@ -94,7 +94,6 @@ class Graph:
         self._reset_colors()
         return path
 
-
     def dfs_iter(self) -> list[int]:
         self._path = []
 
@@ -124,6 +123,7 @@ class Graph:
         self._colors.reset()
         return path
 
+
 def test(test_graphs: list[tuple[str, Graph]]) -> None:
     for name, graph in test_graphs:
         test_title = f"Running tests for {name}"
@@ -138,10 +138,11 @@ def test(test_graphs: list[tuple[str, Graph]]) -> None:
         print(f"\n{hor_equals_sep}\n{double_prefix}{test_title}{double_postfix}\n{hor_equals_sep}\n")
         print(f"{hor_hyphen_sep}\n{single_prefix}{recursive_title}{dfs_title}{single_postfix}\n{hor_hyphen_sep}")
         path = graph.dfs_recur()
-        print(f"PATH: {" -> ".join(map(str, path))}")
+        print(f"PATH: {' -> '.join(map(str, path))}")
         print(f"{hor_hyphen_sep}\n{single_prefix}{iterative_title}{dfs_title}{single_postfix}\n{hor_hyphen_sep}")
         path = graph.dfs_iter()
-        print(f"PATH: {" -> ".join(map(str, path))}")
+        print(f"PATH: {' -> '.join(map(str, path))}")
+
 
 if __name__ == "__main__":
     directed_graph = {
