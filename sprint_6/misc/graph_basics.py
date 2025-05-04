@@ -130,6 +130,31 @@ class Graph:
         self._colors.reset()
         return path
 
+    def topology_sort(self) -> list[int]:
+        result = []
+
+        self._init_colors()
+        if not self._colors:
+            return []
+
+        for start_vertex in self._colors:
+            if self._colors.is_white(start_vertex):
+                stack = [start_vertex]
+                while stack:
+                    vertex = stack.pop()
+                    if self._colors.is_white(vertex):
+                        self._colors.set_value(vertex, GraphColors.GRAY)
+                        stack.append(vertex)
+                        for neighbor in self.graph[vertex]:
+                            if self._colors.is_white(neighbor):
+                                stack.append(neighbor)
+                    elif self._colors.is_gray(vertex):
+                        result.append(vertex)
+                        self._colors.set_value(vertex, GraphColors.BLACK)
+
+        self._colors.reset()
+        return result[::-1]
+
     def __repr__(self) -> str:
         rows: list[str] = []
         for vertex, neighbors in self.graph.items():
@@ -146,11 +171,13 @@ def test(test_graphs: list[tuple[str, Graph]]) -> None:
         recursive_title = "RECURSIVE"
         iterative_title = "ITERATIVE"
         adjacency_matrix_title = "ADJACENCY MATRIX"
+        top_sorted_title = "TOPOLOGICALLY SORTED"
         graph_title = "ASSOCIATIVE LIST"
         dfs_title = " (DFS)"
         dash_sep_adj_matrix = "—" * (len(adjacency_matrix_title) + len(single_prefix) + len(single_postfix))
         dash_sep_assoc = "—" * (len(graph_title) + len(single_prefix) + len(single_postfix))
         dash_sep_dfs_type = "—" * (len(recursive_title) + len(single_prefix) + len(single_postfix) + len(dfs_title))
+        dash_sep_sorted = "—" * (len(top_sorted_title) + len(single_prefix) + len(single_postfix))
 
         print(f"\n{equals_sep_title}\n{double_prefix}{test_title}{double_postfix}\n{equals_sep_title}\n")
         print(f"{dash_sep_assoc}\n{single_prefix}{graph_title}{single_postfix}\n{dash_sep_assoc}")
@@ -159,6 +186,8 @@ def test(test_graphs: list[tuple[str, Graph]]) -> None:
         adjacency_matrix = graph.get_adjacency_matrix()
         for row in adjacency_matrix:
             print(" ".join(map(str, row)))
+        print(f"{dash_sep_sorted}\n{single_prefix}{top_sorted_title}{single_postfix}\n{dash_sep_sorted}")
+        print(" ".join(map(str, graph.topology_sort())))
         print(f"{dash_sep_dfs_type}\n{single_prefix}{recursive_title}{dfs_title}{single_postfix}\n{dash_sep_dfs_type}")
         path = graph.dfs_recur()
         print(f"PATH: {' -> '.join(map(str, path))}")
