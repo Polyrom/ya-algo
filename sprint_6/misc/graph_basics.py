@@ -1,6 +1,12 @@
 from typing import Self
+from queue import Queue
 
 Color = int
+
+
+class GraphDirectionTypes:
+    DIRECTED = "directed graph"
+    UNDIRECTED = "undirected graph"
 
 
 class GraphColors:
@@ -66,24 +72,23 @@ class Graph:
         if self._colors:
             self._colors.reset()
 
-    def _dfs_recur_inner(self, vertex: int) -> None:
-        if not self._colors:
-            return
-        self._colors.set_value(vertex, GraphColors.GRAY)
-        print(f"Vertex {vertex} colored gray")
-        self._path.append(vertex)
-        for neighbour in self.graph[vertex]:
-            if self._colors.is_white(neighbour):
-                self._dfs_recur_inner(neighbour)
-        self._colors.set_value(vertex, GraphColors.BLACK)
-        print(f"Vertex {vertex} colored black")
-
     def get_adjacency_matrix(self) -> list[list[int]]:
         matrix = [[0] * len(self.graph) for _ in range(len(self.graph))]
         for from_, tos in self.graph.items():
             for to in tos:
                 matrix[from_ - 1][to - 1] = 1
         return matrix
+
+    def _dfs_recur_inner(self, vertex: int) -> None:
+        if not self._colors:
+            return
+        self._colors.set_value(vertex, GraphColors.GRAY)
+        self._path.append(vertex)
+        for neighbour in self.graph[vertex]:
+            if self._colors.is_white(neighbour):
+                self._dfs_recur_inner(neighbour)
+        self._colors.set_value(vertex, GraphColors.BLACK)
+        print(f"Vertex {vertex} colored black")
 
     def dfs_recur(self) -> list[int]:
         self._path = []
@@ -116,7 +121,6 @@ class Graph:
                     if self._colors.is_white(vertex):
                         self._colors.set_value(vertex, GraphColors.GRAY)
                         self._path.append(vertex)
-                        print(f"Vertex {vertex} colored gray")
                         stack.append(vertex)
                         for neighbor in self.graph[vertex]:
                             if self._colors.is_white(neighbor):
@@ -128,6 +132,32 @@ class Graph:
         path = self._path
         self._path = []
         self._colors.reset()
+        return path
+
+    def bfs(self, start: int = 1) -> list[int]:
+        path = []
+
+        if start not in self.graph:
+            return []
+
+        self._init_colors()
+        if not self._colors:
+            return []
+
+        planned = Queue()
+        planned.put(start)
+
+        while not planned.empty():
+            vertex = planned.get()
+            for neighbor in self.graph[vertex]:
+                if self._colors.is_white(neighbor):
+                    self._colors.set_value(neighbor, self._colors.GRAY)
+                    planned.put(neighbor)
+            self._colors.set_value(vertex, self._colors.BLACK)
+            print(f"Vertex {vertex} colored black")
+            path.append(vertex)
+
+        self._reset_colors()
         return path
 
     def topology_sort(self) -> list[int]:
@@ -174,9 +204,11 @@ def test(test_graphs: list[tuple[str, Graph]]) -> None:
         top_sorted_title = "TOPOLOGICALLY SORTED"
         graph_title = "ASSOCIATIVE LIST"
         dfs_title = " (DFS)"
+        bfs_title = " (BFS)"
         dash_sep_adj_matrix = "—" * (len(adjacency_matrix_title) + len(single_prefix) + len(single_postfix))
         dash_sep_assoc = "—" * (len(graph_title) + len(single_prefix) + len(single_postfix))
         dash_sep_dfs_type = "—" * (len(recursive_title) + len(single_prefix) + len(single_postfix) + len(dfs_title))
+        dash_sep_bfs_type = "—" * (len(recursive_title) + len(single_prefix) + len(single_postfix) + len(bfs_title))
         dash_sep_sorted = "—" * (len(top_sorted_title) + len(single_prefix) + len(single_postfix))
 
         print(f"\n{equals_sep_title}\n{double_prefix}{test_title}{double_postfix}\n{equals_sep_title}\n")
@@ -194,6 +226,13 @@ def test(test_graphs: list[tuple[str, Graph]]) -> None:
         print(f"{dash_sep_dfs_type}\n{single_prefix}{iterative_title}{dfs_title}{single_postfix}\n{dash_sep_dfs_type}")
         path = graph.dfs_iter()
         print(f"PATH: {' -> '.join(map(str, path))}")
+        if name == GraphDirectionTypes.DIRECTED:
+            print(
+                f"{dash_sep_bfs_type}\n{single_prefix}{iterative_title}{bfs_title}{single_postfix}\n"
+                f"{dash_sep_bfs_type}",
+            )
+            path = graph.bfs()
+            print(f"PATH: {' -> '.join(map(str, path))}")
 
 
 if __name__ == "__main__":
@@ -213,7 +252,7 @@ if __name__ == "__main__":
     }
     test(
         [
-            ("directed graph", Graph(directed_graph)),
-            ("undirected graph", Graph(undirected_graph)),
+            (GraphDirectionTypes.DIRECTED, Graph(directed_graph)),
+            (GraphDirectionTypes.UNDIRECTED, Graph(undirected_graph)),
         ],
     )
