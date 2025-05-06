@@ -9,10 +9,5 @@ def eratosthenes(n: int) -> list[int | bool]:
     return numbers
 
 
-def get_least_prime_linear(n: int) -> tuple(list[int], list[int]):
-    return 0
-
-
 if __name__ == "__main__":
     print(eratosthenes(25))
-    print(get_least_prime_linear(25))
