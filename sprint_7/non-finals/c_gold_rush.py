@@ -1,6 +1,3 @@
-import requests
-
-
 class GoldPot:
     def __init__(self, price: int, weight: int) -> None:
         self.price = price
@@ -43,7 +40,5 @@ def read_input() -> tuple[int, list[GoldPot]]:
 
 
 if __name__ == "__main__":
-    response = requests.get("https://ya.ru")
-    print(response.text)
     backpack_capacity, gold_pots = read_input()
     print(solution(backpack_capacity, gold_pots))
